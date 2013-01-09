@@ -19,7 +19,6 @@
   <meta name="solrHost" content="${freemarker_config.get("solrHost")}"/>
   <meta name="solrApiKey" content="${freemarker_config.get("solrApiKey")}" />
   <meta name="pubGetHost" content="${freemarker_config.pubGetURL}"/>
-  <meta name="relativeMetricHost" content="${freemarker_config.get("relativeMetricHost")}" />
 
   <link rel="shortcut icon" href="${freemarker_config.context}/images/favicon.ico" type="image/x-icon"/>
   <link rel="home" title="home" href="${homeURL}"/>
