@@ -20,6 +20,7 @@
 $.fn.alm = function () {
   this.almHost = $('meta[name=almHost]').attr("content");
   this.pubGetHost = $('meta[name=pubGetHost]').attr("content");
+  this.relativeMetricHost = $('meta[name=relativeMetricHost]').attr("content");
 
   if (this.almHost == null) {
     jQuery.error('The related article metrics server is not defined.  Make sure the almHost is defined in the meta information of the html page.');
@@ -1061,18 +1062,21 @@ $.fn.alm = function () {
       $("#" + loadingID).fadeOut('slow');
     } else {
       if (this.isArticle(doi)) {
-        var almError = function (message) {
+        var almError = function () {
+          console.log("almError");
+
+          var message = "Our system is having a bad day. We are working on it. Please check back later.";
           $("#" + loadingID).fadeOut('slow');
           $("#" + usageID).html("<img src=\"/images/icon_error.png\"/>&nbsp;" + message);
           $("#" + usageID).show("blind", 500);
         };
 
-        var success = function (response) {
+        var success = function (data, relativeMetricData) {
+          console.log("success");
+
           var $usage = $("#" + usageID);
           $("#" + loadingID).fadeOut('slow');
           $usage.css("display", "none");
-
-          var data = this.massageChartData(response.article.source, publishDatems);
 
           var summaryTable = $('<div id="pageViewsSummary"><div id="left"><div class="header">Total Article Views</div>' +
             '<div class="totalCount">' + data.total.format(0, '.', ',') + '</div>' +
@@ -1105,7 +1109,6 @@ $.fn.alm = function () {
             var options = {
               chart:{
                 renderTo:"chart",
-                type:"column",
                 animation:false,
                 margin:[40, 40, 40, 80]
               },
@@ -1172,13 +1175,29 @@ $.fn.alm = function () {
               series:[
                 {
                   name:"PMC",
+                  type:"column",
                   data:[],
                   color:"#6d84bf"
                 },
                 {
                   name:"PLoS",
+                  type:"column",
                   data:[],
                   color:"#3c63af"
+                },
+                {
+                  name:"RelativeMetric",
+                  type:"line",
+                  data:[],
+                  color:"#01DF01",
+                  marker:{
+                    enabled:false,
+                    states: {
+                      hover: {
+                        enabled: false
+                      }
+                    }
+                  }
                 }
               ],
               tooltip:{
@@ -1238,6 +1257,15 @@ $.fn.alm = function () {
                 options.series[0].data.push({ name:key, y:0 });
               }
               options.series[1].data.push({ name:key, y:data.history[key].source.counterViews.cumulativeTotal });
+
+              // relative metric data
+              if (relativeMetricData) {
+                if (relativeMetricData.data[key]) {
+                  options.series[2].data.push({ name:key, y:relativeMetricData.data[key] });
+                } else {
+                  options.series[2].data.push({ name:key, y:0 });
+                }
+              }
             }
 
             $usage.append($('<div id="chart"></div>')
@@ -1251,7 +1279,52 @@ $.fn.alm = function () {
           $usage.show("blind", 500);
         };
 
-        this.getChartData(doi, jQuery.proxy(success, this), almError);
+        var almRequestUrl = this.almHost + "/articles/" + doi + ".json?events=1&source=Counter,PMC";
+
+        var documentId = "combined%3A" + doi;
+        var relativeMetricUrl = this.relativeMetricHost + "/" + documentId;
+
+        var almResponseData = null;
+
+        var almSuccess = function(data) {
+          console.log("almSuccess");
+
+          almResponseData = data;
+
+          return $.jsonp({
+            url:relativeMetricUrl,
+            context:document.body,
+            timeout:20000,
+            callbackParameter:"callback"
+          });
+        };
+
+        var relativeMetricSuccess = function(data) {
+          console.log("relativeMetricSuccess");
+
+          var massagedChartData = this.massageChartData(almResponseData.article.source, publishDatems);
+          success(massagedChartData, data);
+        };
+
+        var relativeMetricError = function() {
+          console.log("relativeMetricError");
+
+          if (almResponseData) {
+            var massagedChartData = this.massageChartData(almResponseData.article.source, publishDatems);
+            success(massagedChartData, null);
+          }
+        };
+
+        var almRequest = $.jsonp({
+            url:almRequestUrl,
+            context:document.body,
+            timeout:20000,
+            callbackParameter:"callback"
+          });
+
+        var relativeMetricRequest = almRequest.then(almSuccess, almError);
+
+        relativeMetricRequest.then(jQuery.proxy(relativeMetricSuccess, this), jQuery.proxy(relativeMetricError, this));
       }
     }
   };
