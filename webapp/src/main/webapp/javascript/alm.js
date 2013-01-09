@@ -1279,6 +1279,8 @@ $.fn.alm = function () {
           $usage.show("blind", 500);
         };
 
+        doi = this.validateDOI(doi);
+
         var almRequestUrl = this.almHost + "/articles/" + doi + ".json?events=1&source=Counter,PMC";
 
         var documentId = "combined%3A" + doi;
