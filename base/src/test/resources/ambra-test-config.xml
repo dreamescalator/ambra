@@ -82,6 +82,7 @@
       </email>
       <freemarker>
         <almHost>http://alm.plos.org</almHost>
+        <relativeMetricHost>http://127.0.0.1:5984/relative-metrics</relativeMetricHost>
       </freemarker>
       <name>PLoS</name>
       <cisStartDate>11/21/2010</cisStartDate>

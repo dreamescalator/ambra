@@ -100,7 +100,9 @@ public class XPathUtilTest {
         {"//config/ambra/platform/name/text()", "PLoS"},
         {"//config/ambra/platform/copyright/@type", "creativecommons"},
         {"//config/ambra/platform/freemarker/almHost/text()", "http://alm.plos.org"},
-        {"count(//config/ambra/platform/freemarker/almHost)", "1"}
+        {"count(//config/ambra/platform/freemarker/almHost)", "1"},
+        {"//config/ambra/platform/freemarker/relativeMetricHost/text()", "http://127.0.0.1:5984/relative-metrics"},
+        {"count(//config/ambra/platform/freemarker/relativeMetricHost)", "1"}
     };
   }
 
@@ -123,6 +125,11 @@ public class XPathUtilTest {
         {"count(//config/ambra/platform/freemarker/almHost)", XPathConstants.NUMBER, Double.class, 1.0},
         {"count(//config/ambra/platform/freemarker/almHost)", XPathConstants.STRING, String.class, "1"},
         {"count(//config/ambra/platform/freemarker/almHost) > 2", XPathConstants.BOOLEAN, Boolean.class, false},
+
+        {"count(//config/ambra/platform/freemarker/relativeMetricHost)", XPathConstants.NUMBER, Double.class, 1.0},
+        {"count(//config/ambra/platform/freemarker/relativeMetricHost)", XPathConstants.STRING, String.class, "1"},
+        {"count(//config/ambra/platform/freemarker/relativeMetricHost) > 2", XPathConstants.BOOLEAN, Boolean.class, false},
+
         {"//config/ambra/platform", XPathConstants.NODE, Node.class, false},
         {"//config/ambra/platform/email/*", XPathConstants.NODESET, NodeList.class, false},
         {"//config/ambra/platform/email/*/text()", XPathConstants.NODESET, NodeList.class, false},
@@ -138,6 +145,7 @@ public class XPathUtilTest {
         {xPathUtil.selectSingleNode(testXml, "//browse"), "//cache/text()", "false"},
         {xPathUtil.selectSingleNode(testXml, "/config/ambra/platform"), "//copyright/@type", "creativecommons"},
         {xPathUtil.selectSingleNode(testXml, "/config/ambra/platform"), "//freemarker/almHost/text()", "http://alm.plos.org"},
+        {xPathUtil.selectSingleNode(testXml, "/config/ambra/platform"), "//freemarker/relativeMetricHost/text()", "http://127.0.0.1:5984/relative-metrics"}
     };
   }
 

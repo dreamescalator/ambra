@@ -19,6 +19,7 @@
     <meta name="solrHost" content="${freemarker_config.get("solrHost")}" />
     <meta name="solrApiKey" content="${freemarker_config.get("solrApiKey")}" />
     <meta name="pubGetHost" content="${freemarker_config.pubGetURL}" />
+    <meta name="relativeMetricHost" content="${freemarker_config.get("relativeMetricHost")}" />
 
     <#include "/includes/article_variables.ftl">
 
