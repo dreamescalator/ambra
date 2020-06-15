@@ -261,7 +261,7 @@
       <dependency> <!-- It is important we get version 3.x to match commons-configuration -->
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
-        <version>3.2</version>
+        <version>3.2.2</version>
       </dependency>
 
       <dependency>
