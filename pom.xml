@@ -38,7 +38,7 @@
     <slf4j.version>1.6.1</slf4j.version>
     <ehcache.version>1.5.0</ehcache.version>
     <xbean-spring.version>3.5</xbean-spring.version>
-    <xerces.version>2.9.1</xerces.version>
+    <xerces.version>2.12.2</xerces.version>
     <easymock.version>2.5.2</easymock.version>
     <hibernate-version>3.6.3.Final</hibernate-version>
     <mysql-connector-java.version>5.1.9</mysql-connector-java.version>
